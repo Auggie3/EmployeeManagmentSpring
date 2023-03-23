@@ -1,0 +1,14 @@
+spring:
+  datasource:
+    name: MySQL Connection
+    url: jdbc:mysql://localhost:3306/EmployeeManagment?useSSL=false&serverTimezone=CET&allowPublicKeyRetrieval=true&useUnicode=true # connection string
+    username: root
+    password: test112266
+    driver-class-name: com.mysql.cj.jdbc.Driver # MySQL 8
+    # driver-class-name: com.mysql.jdbc.Driver # MySQL < 8.0.X (5.7.X, 6.XX)
+  jpa:
+    show-sql: true # default=false
+
+#api path
+api:
+  path: /api
