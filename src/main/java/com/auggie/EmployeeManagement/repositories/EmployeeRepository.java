@@ -15,18 +15,18 @@ public interface EmployeeRepository extends JpaRepository<Employee,Integer> {
 
     @Query(value = """
         Select employee from Employee employee
-        join employee.vacations
-        join employee.pastEmployments
-        join employee.roles
+        left join employee.vacations
+        left join employee.pastEmployments
+        left join employee.roles
     """)
     List<Employee> findAllWithDetails();
 
     @Query(value =
     """
         select  employee from Employee  employee
-        join employee.vacations
-        join employee.pastEmployments
-        join employee.roles
+        left join employee.vacations
+        left join employee.pastEmployments
+        left join employee.roles
         where employee.id=:id  
     """)
     Optional<Employee> findByIdWithDetails(@Param("id") Integer id);

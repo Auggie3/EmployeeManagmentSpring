@@ -44,6 +44,12 @@ public class Employee {
     private Set<Role> roles = new HashSet<>();
 
 
+    //TODO: Make better autentification and authorization
+
+    private String username;
+    private String password;
+
+
     public void addRole(Role role){
         if(role != null){
             this.getRoles().add(role);

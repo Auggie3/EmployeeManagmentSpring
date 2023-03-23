@@ -89,6 +89,13 @@ public class EmployeeService {
     public void addVacation(VacationQuery vacationQuery) {
         Vacation vacation = employeeMapper.toVacation(vacationQuery);
         Employee employee = employeeRepository.getReferenceById(vacation.getEmployeeId());
+
+        //TODO: VAlidation that dates correspond to daysOff
+
+        float daysAvailable = employee.getVacationDaysAvailable();
+        daysAvailable-=vacation.getDaysOff();
+        employee.setVacationDaysAvailable(daysAvailable);
+
         employee.addVacation(vacation);
         employeeRepository.save(employee);
     }
@@ -96,6 +103,11 @@ public class EmployeeService {
     public void deleteVacation(VacationQuery vacationQuery) {
         Vacation vacation = employeeMapper.toVacation(vacationQuery);
         Employee employee = employeeRepository.getReferenceById(vacation.getEmployeeId());
+
+        float daysAvailable = employee.getVacationDaysAvailable();
+        daysAvailable+=vacation.getDaysOff();
+        employee.setVacationDaysAvailable(daysAvailable);
+
         employee.deleteVacation(vacation);
         employeeRepository.save(employee);
     }
