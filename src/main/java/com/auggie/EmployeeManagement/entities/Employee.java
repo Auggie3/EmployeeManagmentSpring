@@ -3,6 +3,7 @@ package com.auggie.EmployeeManagement.entities;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.time.LocalDate;
 import java.util.*;
 
 @Entity
@@ -19,7 +20,7 @@ public class Employee {
     private String name;
 
     @Temporal(TemporalType.DATE)
-    private Date startDate;
+    private LocalDate startDate;
 
     private String position;
 
@@ -78,5 +79,13 @@ public class Employee {
         if(vacation != null){
             this.getVacations().remove(vacation);
         }
+    }
+
+    public void copyEmployee(Employee fromEmployee){
+        this.setName(fromEmployee.getName());
+        this.setVacationDaysAvailable(fromEmployee.getVacationDaysAvailable());
+        this.setPosition(fromEmployee.getPosition());
+        this.setStartDate(fromEmployee.getStartDate());
+        this.setVacationDaysPerYear(fromEmployee.getVacationDaysPerYear());
     }
 }

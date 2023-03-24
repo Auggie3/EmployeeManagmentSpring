@@ -7,6 +7,7 @@ import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDate;
 import java.util.*;
 
 @Data
@@ -14,7 +15,7 @@ import java.util.*;
 public class EmployeeQuery {
     private Integer id;
     private String name;
-    private Date startDate;
+    private LocalDate startDate;
     private String position;
     private float vacationDaysPerYear;
     private float vacationDaysAvailable;

@@ -7,13 +7,14 @@ import jakarta.persistence.TemporalType;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDate;
 import java.util.Date;
 
 @Data
 @NoArgsConstructor
 public class VacationQuery {
     private Integer employeeId;
-    private Date from;
-    private Date to;
+    private LocalDate from;
+    private LocalDate to;
     private float daysOff;
 }

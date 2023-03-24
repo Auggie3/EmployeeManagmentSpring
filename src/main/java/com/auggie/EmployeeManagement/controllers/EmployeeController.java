@@ -7,7 +7,10 @@ import com.auggie.EmployeeManagement.dto.query.EmployeeDetailsQuery;
 import com.auggie.EmployeeManagement.dto.query.EmployeeQuery;
 import com.auggie.EmployeeManagement.dto.query.PastEmploymentQuery;
 import com.auggie.EmployeeManagement.dto.query.VacationQuery;
+import com.auggie.EmployeeManagement.errors.ValidationActivator;
+import com.auggie.EmployeeManagement.errors.ValidationException;
 import com.auggie.EmployeeManagement.services.EmployeeService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -22,6 +25,9 @@ public class EmployeeController {
 
     @Autowired
     private EmployeeService employeeService;
+
+    @Autowired
+    private ValidationActivator validationActivator;
 
     @GetMapping
     public ResponseEntity<List<EmployeeQuery>> findAll(){
@@ -48,7 +54,7 @@ public class EmployeeController {
     }
 
     @PostMapping
-    public ResponseEntity<EmployeeQuery> createEmployee(@RequestBody EmployeeCreateCommand employeeCreateCommand){
+    public ResponseEntity<EmployeeQuery> createEmployee(@RequestBody @Valid EmployeeCreateCommand employeeCreateCommand){
         EmployeeQuery employeeQuery = employeeService.createEmployee(employeeCreateCommand);
         return new ResponseEntity<>(employeeQuery, HttpStatus.CREATED);
     }
@@ -66,7 +72,8 @@ public class EmployeeController {
     }
 
     @PostMapping("/past")
-    public ResponseEntity<Void> addPastEmployment(@RequestBody PastEmploymentQuery pastEmploymentQuery){
+    public ResponseEntity<Void> addPastEmployment(@RequestBody PastEmploymentQuery pastEmploymentQuery) throws ValidationException{
+        validationActivator.activatePastEmploymentValidator(pastEmploymentQuery);
         employeeService.addPastEmployment(pastEmploymentQuery);
         return new ResponseEntity<>(HttpStatus.OK);
     }
@@ -78,7 +85,10 @@ public class EmployeeController {
     }
 
     @PostMapping("/vacation")
-    public ResponseEntity<Void> addVacation(@RequestBody VacationQuery vacationQuery){
+    public ResponseEntity<Void> addVacation(@RequestBody VacationQuery vacationQuery) throws ValidationException {
+
+        validationActivator.activateVacationValidator(vacationQuery);
+
         employeeService.addVacation(vacationQuery);
         return new ResponseEntity<>(HttpStatus.OK);
     }

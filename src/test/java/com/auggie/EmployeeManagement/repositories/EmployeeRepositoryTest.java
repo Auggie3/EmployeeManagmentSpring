@@ -9,7 +9,6 @@ import com.mysql.cj.log.Log;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
-import org.joda.time.LocalDate;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +19,7 @@ import org.springframework.test.context.jdbc.SqlMergeMode;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -51,7 +51,7 @@ public class EmployeeRepositoryTest {
         Employee e = new Employee();
         e.setName("TestName3");
         e.setPosition("TestPosition2");
-        e.setStartDate(new Date());
+        e.setStartDate(LocalDate.now());
         e.setVacationDaysAvailable(22f);
         e.setVacationDaysPerYear(22f);
 
@@ -92,8 +92,8 @@ public class EmployeeRepositoryTest {
         Employee e = employeeRepository.findById(1).orElseThrow(EntityNotFoundException::new);
         Vacation v = new Vacation();
         v.setDaysOff(1f);
-        v.setFrom(LocalDate.parse("2000-11-11").toDate());
-        v.setTo(new Date());
+        v.setFrom(LocalDate.parse("2000-11-11"));
+        v.setTo(LocalDate.parse("2000-12-12"));
         v.setEmployeeId(e.getId());
 
         e.addVacation(v);
@@ -108,8 +108,8 @@ public class EmployeeRepositoryTest {
         Employee e = employeeRepository.findById(8).orElseThrow(EntityNotFoundException::new);
         PastEmployment p = new PastEmployment();
         p.setCompanyName("CompanyTest");
-        p.setFrom(LocalDate.parse("2011-11-11").toDate());
-        p.setTo(LocalDate.parse("2012-11-12").toDate());
+        p.setFrom(LocalDate.parse("2011-11-11"));
+        p.setTo(LocalDate.parse("2012-11-12"));
         p.setEmployeeId(8);
 
         e.addPastEmployment(p);

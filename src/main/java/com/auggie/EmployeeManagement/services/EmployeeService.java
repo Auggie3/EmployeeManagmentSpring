@@ -65,7 +65,9 @@ public class EmployeeService {
 
     public void updateEmployee(EmployeeUpdateCommand employeeUpdateCommand) {
         Employee employee = employeeMapper.toEmployeeUpdate(employeeUpdateCommand);
-        employeeRepository.save(employee);
+        Employee employeeInDatabase = employeeRepository.getReferenceById(employee.getId());
+        employeeInDatabase.copyEmployee(employee);
+        employeeRepository.save(employeeInDatabase);
     }
 
     public void deleteEmployee(Integer id) {

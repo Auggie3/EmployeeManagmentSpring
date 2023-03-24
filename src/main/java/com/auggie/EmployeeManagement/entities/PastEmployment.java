@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Objects;
@@ -31,18 +32,18 @@ public class PastEmployment {
     @Id
     @Temporal(TemporalType.DATE)
     @Column(name = "from_date")
-    private Date from;
+    private LocalDate from;
 
     @Temporal(TemporalType.DATE)
     @Column(name = "to_date")
-    private Date to;
+    private LocalDate to;
 
 
     //TODO: use better date formats
-    public static boolean comparingDates(Date a, Date b){
+    public static boolean comparingDates(LocalDate a, LocalDate b){
         if(a.getYear()==b.getYear())
             if(a.getMonth()==b.getMonth())
-                if(a.getDay()==b.getDay())
+                if(a.getDayOfMonth()==b.getDayOfMonth())
                     return true;
         return false;
     }

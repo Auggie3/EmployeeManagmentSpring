@@ -3,8 +3,10 @@ package com.auggie.EmployeeManagement.entities;
 import com.auggie.EmployeeManagement.entities.composite_primary_keys.VacationCompositeKey;
 import jakarta.persistence.*;
 import lombok.*;
+import org.springframework.cglib.core.internal.LoadingCache;
 
 import java.io.Serializable;
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.Objects;
 
@@ -24,11 +26,11 @@ public class Vacation {
     @Id
     @Temporal(TemporalType.DATE)
     @Column(name = "from_date")
-    private Date from;
+    private LocalDate from;
 
     @Temporal(TemporalType.DATE)
     @Column(name = "to_date")
-    private Date to;
+    private LocalDate to;
 
     private float daysOff;
 

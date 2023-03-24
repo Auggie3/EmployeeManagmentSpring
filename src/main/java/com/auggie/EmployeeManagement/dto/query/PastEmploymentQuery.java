@@ -7,6 +7,7 @@ import jakarta.persistence.TemporalType;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDate;
 import java.util.Date;
 
 @Data
@@ -14,6 +15,6 @@ import java.util.Date;
 public class PastEmploymentQuery {
     private Integer employeeId;
     private String companyName;
-    private Date from;
-    private Date to;
+    private LocalDate from;
+    private LocalDate to;
 }
