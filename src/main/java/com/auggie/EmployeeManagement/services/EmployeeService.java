@@ -1,16 +1,17 @@
 package com.auggie.EmployeeManagement.services;
 
+import com.auggie.EmployeeManagement.dto.EmployeeRoleDTO;
 import com.auggie.EmployeeManagement.dto.command.EmployeeCreateCommand;
 import com.auggie.EmployeeManagement.dto.command.EmployeeUpdateCommand;
-import com.auggie.EmployeeManagement.dto.query.EmployeeDetailsQuery;
-import com.auggie.EmployeeManagement.dto.query.EmployeeQuery;
-import com.auggie.EmployeeManagement.dto.query.PastEmploymentQuery;
-import com.auggie.EmployeeManagement.dto.query.VacationQuery;
+import com.auggie.EmployeeManagement.dto.query.*;
 import com.auggie.EmployeeManagement.entities.Employee;
 import com.auggie.EmployeeManagement.entities.PastEmployment;
+import com.auggie.EmployeeManagement.entities.Role;
 import com.auggie.EmployeeManagement.entities.Vacation;
 import com.auggie.EmployeeManagement.mappers.EmployeeMapper;
+import com.auggie.EmployeeManagement.mappers.RoleMapper;
 import com.auggie.EmployeeManagement.repositories.EmployeeRepository;
+import com.auggie.EmployeeManagement.repositories.RoleRepository;
 import com.mysql.cj.log.Log;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -20,6 +21,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 @Log4j2
 @Service
@@ -28,6 +30,8 @@ public class EmployeeService {
 
     private final EmployeeRepository employeeRepository;
     private final EmployeeMapper employeeMapper;
+    private final RoleRepository roleRepository;
+    private final RoleMapper roleMapper;
 
 
     public List<EmployeeQuery> findAll() {
@@ -59,6 +63,8 @@ public class EmployeeService {
 
     public EmployeeQuery createEmployee(EmployeeCreateCommand employeeCreateCommand) {
         Employee employee = employeeMapper.toEmployee(employeeCreateCommand);
+        Role userRole = roleRepository.findByName("ROLE_USER");
+        employee.addRole(userRole);
         employeeRepository.save(employee);
         return employeeMapper.toEmployeeQuery(employee);
     }
@@ -92,8 +98,6 @@ public class EmployeeService {
         Vacation vacation = employeeMapper.toVacation(vacationQuery);
         Employee employee = employeeRepository.getReferenceById(vacation.getEmployeeId());
 
-        //TODO: VAlidation that dates correspond to daysOff
-
         float daysAvailable = employee.getVacationDaysAvailable();
         daysAvailable-=vacation.getDaysOff();
         employee.setVacationDaysAvailable(daysAvailable);
@@ -106,11 +110,39 @@ public class EmployeeService {
         Vacation vacation = employeeMapper.toVacation(vacationQuery);
         Employee employee = employeeRepository.getReferenceById(vacation.getEmployeeId());
 
+//        log.info("Date test: {}",employee.getVacations());
+//        log.info("Date test: {}",vacationQuery.getFrom());
+
         float daysAvailable = employee.getVacationDaysAvailable();
         daysAvailable+=vacation.getDaysOff();
         employee.setVacationDaysAvailable(daysAvailable);
 
         employee.deleteVacation(vacation);
         employeeRepository.save(employee);
+
+
+    }
+
+    public void addRole(EmployeeRoleDTO employeeRoleDTO) {
+        Employee employee = employeeRepository.getReferenceById(employeeRoleDTO.getEmployeeId());
+        Role role = roleRepository.findByName(employeeRoleDTO.getRoleName());
+        employee.addRole(role);
+        employeeRepository.save(employee);
+    }
+
+    public void removeRole(EmployeeRoleDTO employeeRoleDTO){
+        Employee employee = employeeRepository.getReferenceById(employeeRoleDTO.getEmployeeId());
+        Role role = roleRepository.findByName(employeeRoleDTO.getRoleName());
+        employee.removeRole(role);
+        employeeRepository.save(employee);
+    }
+
+    public List<RoleQuery> findRoles(Integer id) {
+        Employee employee = employeeRepository.getReferenceById(id);
+        Set<Role> roleEntities = employee.getRoles();
+        return roleEntities
+                .stream()
+                .map(roleMapper::toRoleQuery)
+                .toList();
     }
 }

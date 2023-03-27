@@ -6,6 +6,7 @@ import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
 
 import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 
 @Component
 public class VacationValidator implements Validator {
@@ -18,6 +19,12 @@ public class VacationValidator implements Validator {
     public void validate(Object target, Errors errors) {
         VacationQuery vacationQuery = (VacationQuery) target;
         validateDates(vacationQuery.getFrom(),vacationQuery.getTo(), errors);
+        if(!errors.hasErrors()) validateDaysOff(
+                vacationQuery.getFrom(),
+                vacationQuery.getTo(),
+                vacationQuery.getDaysOff(),
+                errors
+        );
     }
 
     private void validateDates(LocalDate from, LocalDate to, Errors errors){
@@ -29,4 +36,28 @@ public class VacationValidator implements Validator {
             );
         }
     }
+
+    private void validateDaysOff(LocalDate from, LocalDate to, float daysOff, Errors errors){
+        if(to==null){
+            if(daysOff == 0.5 || daysOff == 1) return;
+            errors.rejectValue(
+                    "daysOff",
+                    "daysOff-differ-from-dates",
+                    "'daysOff' should correspond to given dates!"
+            );
+            return;
+        }
+
+        long datesDifference = ChronoUnit.DAYS.between(from,to);
+        if( ( (long)daysOff ) != datesDifference){
+            errors.rejectValue(
+                    "daysOff",
+                    "daysOff-differ-from-dates",
+                    "'daysOff' should correspond to given dates!"
+            );
+        }
+
+    }
+
+//---------------------------
 }

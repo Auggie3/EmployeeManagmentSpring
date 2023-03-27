@@ -57,6 +57,12 @@ public class Employee {
         }
     }
 
+    public void removeRole(Role role){
+        if(role != null){
+            this.getRoles().remove(role);
+        }
+    }
+
     public void addVacation(Vacation vacation){
         if(vacation != null){
             this.getVacations().add(vacation);
@@ -81,6 +87,9 @@ public class Employee {
         }
     }
 
+
+    //TODO: do i need this?
+    //this is done to keep the roles, vacations and past employments when updating employee
     public void copyEmployee(Employee fromEmployee){
         this.setName(fromEmployee.getName());
         this.setVacationDaysAvailable(fromEmployee.getVacationDaysAvailable());

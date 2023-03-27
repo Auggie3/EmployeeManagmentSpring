@@ -1,7 +1,7 @@
 spring:
   datasource:
     name: MySQL Connection
-    url: jdbc:mysql://localhost:3306/EmployeeManagment?useSSL=false&serverTimezone=CET&allowPublicKeyRetrieval=true&useUnicode=true # connection string
+    url: jdbc:mysql://localhost:3306/employee_managment?useSSL=false&serverTimezone=CET&allowPublicKeyRetrieval=true&useUnicode=true # connection string
     username: root
     password: test112266
     driver-class-name: com.mysql.cj.jdbc.Driver # MySQL 8

@@ -74,7 +74,7 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "http://localhost:9999/api/employee/details/1",
+					"raw": "http://localhost:9999/api/employee/details/25",
 					"protocol": "http",
 					"host": [
 						"localhost"
@@ -84,7 +84,7 @@
 						"api",
 						"employee",
 						"details",
-						"1"
+						"25"
 					]
 				}
 			},
@@ -97,7 +97,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"name\": \"TestName1\",\n    \"startDate\": \"2000-11-11\",\n    \"position\": \"TestPosition1\",\n    \"vacationDaysPerYear\": 22,\n    \"vacationDaysAvailable\": 22\n}",
+					"raw": "{\n    \"name\": \"TestForRole1\",\n    \"startDate\": \"2000-11-11\",\n    \"position\": \"TestPosition1111\",\n    \"vacationDaysPerYear\": 22,\n    \"vacationDaysAvailable\": 22\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -236,7 +236,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"employeeId\": 1,\n    \"from\": \"2011-11-11\",\n    \"to\": \"2010-11-12\",\n    \"daysOff\": 1\n}",
+					"raw": "{\n    \"employeeId\": 1,\n    \"from\": \"2011-11-11\",\n    \"to\": \"2012-11-12\",\n    \"daysOff\": 2\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -266,7 +266,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"employeeId\": 1,\n    \"from\": \"2000-11-11\",\n    \"to\": \"2010-11-12\",\n    \"daysOff\": 1\n}",
+					"raw": "{\n    \"employeeId\": 1,\n    \"from\": \"2011-11-11\",\n    \"to\": \"2012-11-12\",\n    \"daysOff\": 1\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -354,6 +354,88 @@
 						"api",
 						"role",
 						"17"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Find All Roles For One Employee",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:9999/api/employee/role/1",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "9999",
+					"path": [
+						"api",
+						"employee",
+						"role",
+						"1"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Add Role To Employee",
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"employeeId\": 1,\n    \"roleName\": \"ROLE_USER\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:9999/api/employee/role",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "9999",
+					"path": [
+						"api",
+						"employee",
+						"role"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Remove Role From Employee",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"employeeId\": 1,\n    \"roleName\": \"ROLE_ADMIN\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:9999/api/employee/role",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "9999",
+					"path": [
+						"api",
+						"employee",
+						"role"
 					]
 				}
 			},

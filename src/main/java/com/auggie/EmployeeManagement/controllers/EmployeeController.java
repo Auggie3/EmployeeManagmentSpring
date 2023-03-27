@@ -1,12 +1,10 @@
 package com.auggie.EmployeeManagement.controllers;
 
 
+import com.auggie.EmployeeManagement.dto.EmployeeRoleDTO;
 import com.auggie.EmployeeManagement.dto.command.EmployeeCreateCommand;
 import com.auggie.EmployeeManagement.dto.command.EmployeeUpdateCommand;
-import com.auggie.EmployeeManagement.dto.query.EmployeeDetailsQuery;
-import com.auggie.EmployeeManagement.dto.query.EmployeeQuery;
-import com.auggie.EmployeeManagement.dto.query.PastEmploymentQuery;
-import com.auggie.EmployeeManagement.dto.query.VacationQuery;
+import com.auggie.EmployeeManagement.dto.query.*;
 import com.auggie.EmployeeManagement.errors.ValidationActivator;
 import com.auggie.EmployeeManagement.errors.ValidationException;
 import com.auggie.EmployeeManagement.services.EmployeeService;
@@ -99,6 +97,25 @@ public class EmployeeController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
+
+    @GetMapping("role/{id}")
+    public ResponseEntity<List<RoleQuery>> findRoles(@PathVariable("id") Integer id){
+        List<RoleQuery> employeeRoles = employeeService.findRoles(id);
+        return new ResponseEntity<>(employeeRoles,HttpStatus.OK);
+    }
+
+    @PutMapping("/role")
+    public ResponseEntity<Void> addRoleToEmployee(@RequestBody EmployeeRoleDTO employeeRoleDTO){
+
+        employeeService.addRole(employeeRoleDTO);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @DeleteMapping("/role")
+    public ResponseEntity<Void> removeRoleFromEmployee(@RequestBody EmployeeRoleDTO employeeRoleDTO){
+        employeeService.removeRole(employeeRoleDTO);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
 
 
 

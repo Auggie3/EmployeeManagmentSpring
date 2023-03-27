@@ -39,21 +39,12 @@ public class PastEmployment {
     private LocalDate to;
 
 
-    //TODO: use better date formats
-    public static boolean comparingDates(LocalDate a, LocalDate b){
-        if(a.getYear()==b.getYear())
-            if(a.getMonth()==b.getMonth())
-                if(a.getDayOfMonth()==b.getDayOfMonth())
-                    return true;
-        return false;
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         PastEmployment that = (PastEmployment) o;
-        return employeeId.equals(that.employeeId) && companyName.equals(that.companyName) && comparingDates(from,that.from);
+        return employeeId.equals(that.employeeId) && companyName.equals(that.companyName) && from.isEqual(that.from);
     }
 
     @Override

@@ -7,6 +7,7 @@ import org.springframework.cglib.core.internal.LoadingCache;
 
 import java.io.Serializable;
 import java.time.LocalDate;
+import java.time.chrono.ChronoLocalDate;
 import java.util.Date;
 import java.util.Objects;
 
@@ -35,14 +36,13 @@ public class Vacation {
     private float daysOff;
 
 
-    //TODO: BETTER DATE FORMAT
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Vacation vacation = (Vacation) o;
-        return employeeId.equals(vacation.employeeId) && PastEmployment.comparingDates(from, vacation.from);
+        return employeeId.equals(vacation.employeeId) && from.isEqual(vacation.from);
     }
 
     @Override
