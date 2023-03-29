@@ -46,7 +46,6 @@ public class Employee {
 
 
     //TODO: Make better autentification and authorization
-
     private String username;
     private String password;
 

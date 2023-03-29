@@ -12,6 +12,7 @@ import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -28,12 +29,14 @@ public class EmployeeController {
     private ValidationActivator validationActivator;
 
     @GetMapping
+    @Secured("ROLE_ADMIN")
     public ResponseEntity<List<EmployeeQuery>> findAll(){
         List<EmployeeQuery> allEmployees = employeeService.findAll();
         return new ResponseEntity<>(allEmployees, HttpStatus.OK);
     }
 
     @GetMapping("details")
+    @Secured("ROLE_ADMIN")
     public ResponseEntity<List<EmployeeDetailsQuery>> findAllWithDetails(){
         List<EmployeeDetailsQuery> allEmployees = employeeService.findAllWithDetails();
         return new ResponseEntity<>(allEmployees,HttpStatus.OK);
@@ -52,24 +55,28 @@ public class EmployeeController {
     }
 
     @PostMapping
+    @Secured("ROLE_ADMIN")
     public ResponseEntity<EmployeeQuery> createEmployee(@RequestBody @Valid EmployeeCreateCommand employeeCreateCommand){
         EmployeeQuery employeeQuery = employeeService.createEmployee(employeeCreateCommand);
         return new ResponseEntity<>(employeeQuery, HttpStatus.CREATED);
     }
 
     @PutMapping
+    @Secured("ROLE_ADMIN")
     public ResponseEntity<Void> updateEmployee(@RequestBody EmployeeUpdateCommand employeeUpdateCommand){
         employeeService.updateEmployee(employeeUpdateCommand);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @DeleteMapping("{id}")
+    @Secured("ROLE_ADMIN")
     public ResponseEntity<Void> deleteEmployee(@PathVariable("id") Integer id){
         employeeService.deleteEmployee(id);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @PostMapping("/past")
+    @Secured("ROLE_ADMIN")
     public ResponseEntity<Void> addPastEmployment(@RequestBody PastEmploymentQuery pastEmploymentQuery) throws ValidationException{
         validationActivator.activatePastEmploymentValidator(pastEmploymentQuery);
         employeeService.addPastEmployment(pastEmploymentQuery);
@@ -77,6 +84,7 @@ public class EmployeeController {
     }
 
     @DeleteMapping("/past")
+    @Secured("ROLE_ADMIN")
     public ResponseEntity<Void> deletePastEmployment(@RequestBody PastEmploymentQuery pastEmploymentQuery){
         employeeService.deletePastEmployment(pastEmploymentQuery);
         return new ResponseEntity<>(HttpStatus.OK);
@@ -105,6 +113,7 @@ public class EmployeeController {
     }
 
     @PutMapping("/role")
+    @Secured("ROLE_ADMIN")
     public ResponseEntity<Void> addRoleToEmployee(@RequestBody EmployeeRoleDTO employeeRoleDTO){
 
         employeeService.addRole(employeeRoleDTO);
@@ -112,6 +121,7 @@ public class EmployeeController {
     }
 
     @DeleteMapping("/role")
+    @Secured("ROLE_ADMIN")
     public ResponseEntity<Void> removeRoleFromEmployee(@RequestBody EmployeeRoleDTO employeeRoleDTO){
         employeeService.removeRole(employeeRoleDTO);
         return new ResponseEntity<>(HttpStatus.OK);

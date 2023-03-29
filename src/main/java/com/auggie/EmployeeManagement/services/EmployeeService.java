@@ -145,4 +145,8 @@ public class EmployeeService {
                 .map(roleMapper::toRoleQuery)
                 .toList();
     }
+
+    public Optional<Employee> findByUsernameWithRoles(String username) {
+        return employeeRepository.findByUsernameWithRoles(username);
+    }
 }
