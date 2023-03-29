@@ -12,3 +12,9 @@ spring:
 #api path
 api:
   path: /api
+
+
+jwt:
+  secret: SG93VG9UcmFpbllvdXJEcmFnb25ha2xmamFsZGZ1aXdlaHJqZmpkbHNmaWZqYWpma2xha2hmYWpkZmpza2Fsa29zamlvc2tmZ2hpcXdpcmlxaWphc25qZm9hc3BvZnVxYndqa2ZuZmFz
+  tokenValidityInMinutes: 30
+  refreshTokenValidityInMinutes: 10080
