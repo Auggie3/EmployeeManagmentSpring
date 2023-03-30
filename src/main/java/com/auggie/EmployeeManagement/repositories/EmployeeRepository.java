@@ -38,4 +38,11 @@ public interface EmployeeRepository extends JpaRepository<Employee,Integer> {
         where employee.username = :username
     """)
     Optional<Employee> findByUsernameWithRoles(@Param("username") String username);
+
+    @Query(value = """
+        select employee.id
+        from Employee employee
+        where employee.username = :username
+    """)
+    Integer findIdOfUsername(@Param("username") String username);
 }

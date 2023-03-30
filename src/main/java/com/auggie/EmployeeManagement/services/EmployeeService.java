@@ -149,4 +149,8 @@ public class EmployeeService {
     public Optional<Employee> findByUsernameWithRoles(String username) {
         return employeeRepository.findByUsernameWithRoles(username);
     }
+
+    public Integer findIdOfUsername(String username) {
+        return employeeRepository.findIdOfUsername(username);
+    }
 }
