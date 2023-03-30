@@ -10,7 +10,13 @@
 			"name": "Find all employees",
 			"request": {
 				"method": "GET",
-				"header": [],
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhZG1pbiIsImF1dGgiOiJST0xFX0FETUlOIiwiZXhwIjoxNjgwMTAwNDI1fQ.jw057ki9yRTJTRwKIFTxKj1ZZBTNxQQ5n5-hSuQcM5lwKF7Gt5jgm-p1EhImuaRo_QFZJAGB2tfD9lCjMcnj9g",
+						"type": "text"
+					}
+				],
 				"url": {
 					"raw": "http://localhost:9999/api/employee",
 					"protocol": "http",
@@ -51,9 +57,15 @@
 			"name": "Find Employee By ID",
 			"request": {
 				"method": "GET",
-				"header": [],
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ0ZXN0MiIsImF1dGgiOiJST0xFX1VTRVIiLCJjcmVkZW50aWFscyI6OCwiZXhwIjoxNjgwMTg2NTE3fQ.SMSfzZYxoriX6TbXBJvMFAxnQC0hB1POpCNQVcrgfb_IRXop2R8zW8njMD-rHH_wIczL3OkclPQkzrbS0axEtw",
+						"type": "text"
+					}
+				],
 				"url": {
-					"raw": "http://localhost:9999/api/employee/1",
+					"raw": "http://localhost:9999/api/employee/8",
 					"protocol": "http",
 					"host": [
 						"localhost"
@@ -62,7 +74,7 @@
 					"path": [
 						"api",
 						"employee",
-						"1"
+						"8"
 					]
 				}
 			},
@@ -233,10 +245,16 @@
 			"name": "Add Vacation",
 			"request": {
 				"method": "POST",
-				"header": [],
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ0ZXN0MiIsImF1dGgiOiJST0xFX1VTRVIiLCJjcmVkZW50aWFscyI6OCwiZXhwIjoxNjgwMTg3NTYxfQ.20tKJnPTTVZSUwkjEHwujA6EgSSOrHC9MC4Ck3GZM0zvKIoppN4k3O3gPp0KXyNhl3-UVWnRzWsKpq94VaMrEA",
+						"type": "text"
+					}
+				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"employeeId\": 1,\n    \"from\": \"2011-11-11\",\n    \"to\": \"2012-11-12\",\n    \"daysOff\": 2\n}",
+					"raw": "{\n    \"employeeId\": 9,\n    \"from\": \"2011-11-12\",\n    \"to\": \"2011-11-13\",\n    \"daysOff\": 1\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -436,6 +454,64 @@
 						"api",
 						"employee",
 						"role"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Login",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"username\": \"test2\",\n    \"password\": \"test2\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:9999/api/authenticate/login",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "9999",
+					"path": [
+						"api",
+						"authenticate",
+						"login"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "FInd Details About \"ME\" (CURRENT EMPLOYEE from JWT)",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ0ZXN0MiIsImF1dGgiOiJST0xFX1VTRVIiLCJjcmVkZW50aWFscyI6OCwiZXhwIjoxNjgwMTg2NTE3fQ.SMSfzZYxoriX6TbXBJvMFAxnQC0hB1POpCNQVcrgfb_IRXop2R8zW8njMD-rHH_wIczL3OkclPQkzrbS0axEtw",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "http://localhost:9999/api/employee/details/me",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "9999",
+					"path": [
+						"api",
+						"employee",
+						"details",
+						"me"
 					]
 				}
 			},
