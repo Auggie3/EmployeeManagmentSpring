@@ -57,6 +57,7 @@ public class VacationController {
     public ResponseEntity<Void> requestVacation(@RequestBody VacationQuery vacationQuery) throws ValidationException{
 
         validationActivator.activateVacationValidator(vacationQuery);
+        validationActivator.activateVacationRequestValidator(vacationQuery);
 
         vacationService.requestVacation(vacationQuery);
         return new ResponseEntity<>(HttpStatus.OK);

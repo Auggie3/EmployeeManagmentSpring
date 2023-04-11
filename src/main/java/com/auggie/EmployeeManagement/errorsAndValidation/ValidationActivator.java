@@ -24,6 +24,7 @@ public class ValidationActivator {
     private final RoleValidator roleValidator;
     private final ChangePasswordValidator changePasswordValidator;
     private final UsernameValidator usernameValidator;
+    private final VacationRequestValidator vacationRequestValidator;
 
 
     public void activateVacationValidator(VacationQuery vacationQuery) throws ValidationException{
@@ -44,6 +45,10 @@ public class ValidationActivator {
 
     public void activateUsernameValidator(Object object) throws ValidationException{
             activateValidator(usernameValidator, object);
+    }
+
+    public void activateVacationRequestValidator(VacationQuery vacationQuery) throws ValidationException{
+        activateValidator(vacationRequestValidator, vacationQuery);
     }
 
     private void activateValidator(Validator validator, Object o) throws  ValidationException{
