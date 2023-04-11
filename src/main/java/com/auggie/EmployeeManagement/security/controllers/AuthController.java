@@ -8,6 +8,7 @@ import lombok.extern.log4j.Log4j2;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -26,7 +27,7 @@ public class AuthController {
 
 
     @PostMapping("login")
-    public ResponseEntity<JwtTokenDTO> login(@RequestBody LoginDTO loginDTO){
+    public ResponseEntity<JwtTokenDTO> login(@RequestBody LoginDTO loginDTO) throws BadCredentialsException {
 
         try{
             Authentication authentication = new UsernamePasswordAuthenticationToken(
@@ -36,8 +37,13 @@ public class AuthController {
             Authentication auth = authenticationManager.authenticate(authentication);
             JwtTokenDTO jwtTokenDTO = tokenProvider.generateToken(auth, loginDTO.isRememberMe());
             return new ResponseEntity<>(jwtTokenDTO, HttpStatus.CREATED);
-        }catch (Exception e){
+        }
+        catch (BadCredentialsException badCredentialsException){
+            throw badCredentialsException;
+        }
+        catch (Exception e){
             log.error("Login error. Message: {}", e.getMessage());
+            e.printStackTrace();
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
         }
     }

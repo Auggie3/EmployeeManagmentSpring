@@ -18,9 +18,6 @@ public class CustomAuthComponent {
         if(authentication.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_ADMIN")))
             return true;
 
-        if(id == authentication.getCredentials())
-            return true;
-
 
         return false;
     }
@@ -29,10 +26,6 @@ public class CustomAuthComponent {
     public boolean hasPermisionForVacations(Authentication authentication, VacationQuery vacationQuery){
 
         if(authentication.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_ADMIN")))
-            return true;
-
-        Integer id = (Integer) authentication.getCredentials();
-        if(vacationQuery.getEmployeeId() == id)
             return true;
 
         return false;

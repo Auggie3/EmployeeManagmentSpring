@@ -31,4 +31,11 @@ public class EmployeeCreateCommand {
 
     @PositiveOrZero
     private float vacationDaysAvailable;
+
+    @NotNull
+    @NotBlank
+    private String username;
+
+    @NotBlank
+    private String password = "11111111";
 }

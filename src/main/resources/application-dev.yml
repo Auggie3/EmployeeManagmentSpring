@@ -8,6 +8,11 @@ spring:
     # driver-class-name: com.mysql.jdbc.Driver # MySQL < 8.0.X (5.7.X, 6.XX)
   jpa:
     show-sql: true # default=false
+  cache:
+    jcache:
+      config: classpath:ehcache.xml
+
+
 
 #api path
 api:

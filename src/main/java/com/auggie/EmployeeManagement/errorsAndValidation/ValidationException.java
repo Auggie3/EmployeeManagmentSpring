@@ -1,4 +1,4 @@
-package com.auggie.EmployeeManagement.errors;
+package com.auggie.EmployeeManagement.errorsAndValidation;
 
 import lombok.Getter;
 import org.springframework.validation.Errors;

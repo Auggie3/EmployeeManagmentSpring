@@ -1,4 +1,4 @@
-package com.auggie.EmployeeManagement.errors.validators;
+package com.auggie.EmployeeManagement.errorsAndValidation.validators;
 
 import com.auggie.EmployeeManagement.dto.query.PastEmploymentQuery;
 import org.springframework.stereotype.Component;

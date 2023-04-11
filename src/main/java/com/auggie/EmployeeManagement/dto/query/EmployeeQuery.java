@@ -17,6 +17,7 @@ public class EmployeeQuery {
     private String name;
     private LocalDate startDate;
     private String position;
+    private String username;
     private float vacationDaysPerYear;
     private float vacationDaysAvailable;
 }

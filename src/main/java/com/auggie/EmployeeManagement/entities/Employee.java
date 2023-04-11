@@ -2,6 +2,7 @@ package com.auggie.EmployeeManagement.entities;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import java.time.LocalDate;
 import java.util.*;
@@ -36,7 +37,7 @@ public class Employee {
     @OneToMany(mappedBy = "employeeId", orphanRemoval = true, fetch = FetchType.LAZY, cascade = {CascadeType.ALL})
     private List<PastEmployment> pastEmployments = new ArrayList<>();
 
-    @ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.ALL})
+    @ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST})
     @JoinTable(
             name = "employee_role",
             joinColumns = @JoinColumn(name = "employee_id"),
@@ -45,10 +46,10 @@ public class Employee {
     private Set<Role> roles = new HashSet<>();
 
 
-    //TODO: Make better autentification and authorization
+
+    @Column(unique = true)
     private String username;
     private String password;
-
 
     public void addRole(Role role){
         if(role != null){
@@ -87,7 +88,6 @@ public class Employee {
     }
 
 
-    //TODO: do i need this?
     //this is done to keep the roles, vacations and past employments when updating employee
     public void copyEmployee(Employee fromEmployee){
         this.setName(fromEmployee.getName());
@@ -95,5 +95,11 @@ public class Employee {
         this.setPosition(fromEmployee.getPosition());
         this.setStartDate(fromEmployee.getStartDate());
         this.setVacationDaysPerYear(fromEmployee.getVacationDaysPerYear());
+        this.setUsername(fromEmployee.getUsername());
+    }
+
+    public void changePassword(String password){
+        String encryptedPassword = new BCryptPasswordEncoder().encode(password);
+        setPassword(encryptedPassword);
     }
 }

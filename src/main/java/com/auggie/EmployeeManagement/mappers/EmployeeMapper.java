@@ -18,14 +18,12 @@ import org.mapstruct.ReportingPolicy;
 )
 public interface EmployeeMapper {
 
-    VacationQuery toVacationQuery(Vacation vacation);
     PastEmploymentQuery toPastEmploymentQuery(PastEmployment pastEmployment);
     EmployeeQuery toEmployeeQuery(Employee employee);
     EmployeeDetailsQuery toEmployeeDetailsQuery(Employee employee);
 
     Employee toEmployee(EmployeeCreateCommand employeeCreateCommand);
     Employee toEmployeeUpdate(EmployeeUpdateCommand employeeUpdateCommand);
-    Vacation toVacation(VacationQuery vacationQuery);
     PastEmployment toPastEmployment(PastEmploymentQuery pastEmploymentQuery);
 
 }

@@ -22,4 +22,5 @@ public class EmployeeDetailsQuery {
     private List<VacationQuery> vacations;
     private List<PastEmploymentQuery> pastEmployments;
     private Set<RoleQuery> roles;
+    private String username;
 }

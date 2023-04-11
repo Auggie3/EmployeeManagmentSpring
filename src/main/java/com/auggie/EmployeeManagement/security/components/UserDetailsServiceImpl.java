@@ -35,7 +35,6 @@ public class UserDetailsServiceImpl implements UserDetailsService {
                     .map(role -> (GrantedAuthority) new SimpleGrantedAuthority(role.getName()))
                     .toList();
 
-            log.info("employee: {}",employee);
 
             return new User(
                 employee.getUsername(), employee.getPassword(), authorityList

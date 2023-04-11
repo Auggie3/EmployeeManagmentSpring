@@ -1,4 +1,4 @@
-package com.auggie.EmployeeManagement.errors.dto;
+package com.auggie.EmployeeManagement.errorsAndValidation.dto;
 
 import lombok.Data;
 import lombok.RequiredArgsConstructor;

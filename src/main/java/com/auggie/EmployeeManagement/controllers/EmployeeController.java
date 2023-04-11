@@ -1,17 +1,18 @@
 package com.auggie.EmployeeManagement.controllers;
 
 
+import com.auggie.EmployeeManagement.dto.ChangePasswordDTO;
 import com.auggie.EmployeeManagement.dto.EmployeeRoleDTO;
 import com.auggie.EmployeeManagement.dto.command.EmployeeCreateCommand;
 import com.auggie.EmployeeManagement.dto.command.EmployeeUpdateCommand;
 import com.auggie.EmployeeManagement.dto.query.*;
-import com.auggie.EmployeeManagement.errors.ValidationActivator;
-import com.auggie.EmployeeManagement.errors.ValidationException;
-import com.auggie.EmployeeManagement.security.components.CustomAuthComponent;
+import com.auggie.EmployeeManagement.errorsAndValidation.ValidationActivator;
+import com.auggie.EmployeeManagement.errorsAndValidation.ValidationException;
 import com.auggie.EmployeeManagement.services.EmployeeService;
+import jakarta.persistence.Version;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
@@ -23,6 +24,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 
+@Log4j2
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/api/employee")
@@ -31,7 +33,6 @@ public class EmployeeController {
     private final EmployeeService employeeService;
     private final ValidationActivator validationActivator;
 
-    //TODO: Make multiple classes for endpoints
 
     @GetMapping
     @Secured("ROLE_ADMIN")
@@ -71,14 +72,20 @@ public class EmployeeController {
 
     @PostMapping
     @Secured("ROLE_ADMIN")
-    public ResponseEntity<EmployeeQuery> createEmployee(@RequestBody @Valid EmployeeCreateCommand employeeCreateCommand){
+    public ResponseEntity<EmployeeQuery> createEmployee(@RequestBody @Valid EmployeeCreateCommand employeeCreateCommand)
+    throws ValidationException
+    {
+        validationActivator.activateUsernameValidator(employeeCreateCommand);
         EmployeeQuery employeeQuery = employeeService.createEmployee(employeeCreateCommand);
         return new ResponseEntity<>(employeeQuery, HttpStatus.CREATED);
     }
 
     @PutMapping
     @Secured("ROLE_ADMIN")
-    public ResponseEntity<Void> updateEmployee(@RequestBody EmployeeUpdateCommand employeeUpdateCommand){
+    public ResponseEntity<Void> updateEmployee(@RequestBody EmployeeUpdateCommand employeeUpdateCommand)
+    throws ValidationException
+    {
+        validationActivator.activateUsernameValidator(employeeUpdateCommand);
         employeeService.updateEmployee(employeeUpdateCommand);
         return new ResponseEntity<>(HttpStatus.OK);
     }
@@ -105,22 +112,7 @@ public class EmployeeController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    @PostMapping("/vacation")
-    @PreAuthorize(value = "@customAuthComponent.hasPermisionForVacations(authentication,#vacationQuery)")
-    public ResponseEntity<Void> addVacation(@RequestBody VacationQuery vacationQuery) throws ValidationException {
 
-        validationActivator.activateVacationValidator(vacationQuery);
-
-        employeeService.addVacation(vacationQuery);
-        return new ResponseEntity<>(HttpStatus.OK);
-    }
-
-    @DeleteMapping("/vacation")
-    @PreAuthorize(value = "@customAuthComponent.hasPermisionForVacations(authentication,#vacationQuery)")
-    public ResponseEntity<Void> deleteVacation(@RequestBody VacationQuery vacationQuery){
-        employeeService.deleteVacation(vacationQuery);
-        return new ResponseEntity<>(HttpStatus.OK);
-    }
 
 
     @GetMapping("role/{id}")
@@ -145,6 +137,16 @@ public class EmployeeController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
+    @PutMapping("/password")
+    public ResponseEntity<Void> changePassword(@RequestBody @Valid ChangePasswordDTO changePasswordDTO) throws ValidationException{
+        Integer id = (Integer)SecurityContextHolder.getContext().getAuthentication().getCredentials();
+        validationActivator.activateChangePasswordValidator(changePasswordDTO);
+        employeeService.changePassword(changePasswordDTO.getNewPassword(), id);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @Version
+    private int version;
 
 
 }

@@ -68,8 +68,12 @@ public class JwtTokenProvider {
                     .setExpiration(refreshTokenValidity)
                     .compact();
         }
+        boolean isAdmin = false;
+        if(authentication.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_ADMIN"))){
+            isAdmin = true;
+        }
 
-        return new JwtTokenDTO(accessToken, refreshToken);
+        return new JwtTokenDTO(accessToken, refreshToken, isAdmin);
     }
 
 

@@ -1,6 +1,9 @@
-package com.auggie.EmployeeManagement.errors;
+package com.auggie.EmployeeManagement.errorsAndValidation;
 
-import com.auggie.EmployeeManagement.errors.dto.ErrorDto;
+import com.auggie.EmployeeManagement.errorsAndValidation.dto.ErrorDto;
+import org.apache.el.util.ExceptionUtils;
+import org.hibernate.exception.ConstraintViolationException;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
@@ -65,4 +68,5 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
         return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
     }
+
 }
