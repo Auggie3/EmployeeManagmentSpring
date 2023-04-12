@@ -5,6 +5,9 @@ import com.auggie.EmployeeManagement.entities.Employee;
 import com.auggie.EmployeeManagement.mappers.EmployeeMapper;
 import com.auggie.EmployeeManagement.repositories.EmployeeSearchRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.HashSet;
@@ -20,22 +23,26 @@ public class EmployeeSearchService {
     private final EmployeeMapper employeeMapper;
 
 
-    public Set<EmployeeQuery> search(String search) {
-        List<Employee> employeeListByName = employeeSearchRepository.findByNameContainingIgnoreCase(search);
-        List<Employee> employeeListByPosition = employeeSearchRepository.findByPositionContainingIgnoreCase(search);
+    public List<EmployeeQuery> search(String search) {
 
-        List<EmployeeQuery> employeesWithDuplicates = Stream.concat(
-                employeeListByName
-                        .stream()
-                        .map(employeeMapper::toEmployeeQuery),
-                employeeListByPosition
-                        .stream()
-                        .map(employeeMapper::toEmployeeQuery)
-                ).toList();
+        List<Employee> employeesSearch = employeeSearchRepository
+                .findByNameContainingIgnoreCaseOrPositionContainingIgnoreCase(search, search);
 
-        Set<EmployeeQuery> employeeQuerySet = new HashSet<>(employeesWithDuplicates);
-
-        return employeeQuerySet;
+        return employeesSearch
+                .stream()
+                .map(employeeMapper::toEmployeeQuery)
+                .toList();
     }
 
+    public Page<EmployeeQuery> searchPage(String search, Pageable pageable) {
+        Page<Employee> employeePage = employeeSearchRepository.
+                findByNameContainingIgnoreCaseOrPositionContainingIgnoreCase(search,search,pageable);
+
+        List<EmployeeQuery> employeeQueryList = employeePage.getContent()
+                .stream()
+                .map(employeeMapper::toEmployeeQuery)
+                .toList();
+
+        return new PageImpl<>(employeeQueryList, pageable, employeePage.getTotalElements());
+    }
 }
