@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import java.util.HashSet;
@@ -44,5 +45,13 @@ public class EmployeeSearchService {
                 .toList();
 
         return new PageImpl<>(employeeQueryList, pageable, employeePage.getTotalElements());
+    }
+
+    public List<EmployeeQuery> filter(Specification<Employee> employeeSpecification) {
+        List<Employee> employees = employeeSearchRepository.findAll(employeeSpecification);
+        return employees
+                .stream()
+                .map(employeeMapper::toEmployeeQuery)
+                .toList();
     }
 }
