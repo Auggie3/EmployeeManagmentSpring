@@ -9,10 +9,13 @@ import com.auggie.EmployeeManagement.dto.query.*;
 import com.auggie.EmployeeManagement.errorsAndValidation.ValidationActivator;
 import com.auggie.EmployeeManagement.errorsAndValidation.ValidationException;
 import com.auggie.EmployeeManagement.services.EmployeeService;
+import jakarta.annotation.security.PermitAll;
 import jakarta.persistence.Version;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
@@ -39,6 +42,13 @@ public class EmployeeController {
     public ResponseEntity<List<EmployeeQuery>> findAll(){
         List<EmployeeQuery> allEmployees = employeeService.findAll();
         return new ResponseEntity<>(allEmployees, HttpStatus.OK);
+    }
+
+    @GetMapping("page")
+    @Secured("ROLE_ADMIN")
+    public ResponseEntity<Page<EmployeeQuery>> findPage(Pageable pageable){
+        Page<EmployeeQuery> employeeQueryPage = employeeService.findPage(pageable);
+        return new ResponseEntity<>(employeeQueryPage, HttpStatus.OK);
     }
 
     @GetMapping("details")
