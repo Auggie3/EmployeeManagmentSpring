@@ -1,14 +1,12 @@
 package com.auggie.EmployeeManagement.errorsAndValidation;
 
 import com.auggie.EmployeeManagement.dto.ChangePasswordDTO;
-import com.auggie.EmployeeManagement.dto.command.EmployeeCreateCommand;
-import com.auggie.EmployeeManagement.dto.command.EmployeeUpdateCommand;
 import com.auggie.EmployeeManagement.dto.command.RoleCreateCommand;
+import com.auggie.EmployeeManagement.dto.command.VacationCommand;
 import com.auggie.EmployeeManagement.dto.query.PastEmploymentQuery;
-import com.auggie.EmployeeManagement.dto.query.VacationQuery;
 import com.auggie.EmployeeManagement.errorsAndValidation.validators.*;
+import com.auggie.EmployeeManagement.interfaces.EmployeeCommandInterface;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.BeanPropertyBindingResult;
 import org.springframework.validation.Errors;
@@ -23,12 +21,12 @@ public class ValidationActivator {
     private final PastEmploymentValidator pastEmploymentValidator;
     private final RoleValidator roleValidator;
     private final ChangePasswordValidator changePasswordValidator;
-    private final UsernameValidator usernameValidator;
+    private final EmployeeCommandValidator employeeCommandValidator;
     private final VacationRequestValidator vacationRequestValidator;
 
 
-    public void activateVacationValidator(VacationQuery vacationQuery) throws ValidationException{
-        activateValidator(vacationValidator,vacationQuery);
+    public void activateVacationValidator(VacationCommand vacationCommand) throws ValidationException{
+        activateValidator(vacationValidator, vacationCommand);
     }
 
     public void activatePastEmploymentValidator(PastEmploymentQuery pastEmploymentQuery) throws  ValidationException{
@@ -43,12 +41,12 @@ public class ValidationActivator {
         activateValidator(changePasswordValidator, changePasswordDTO);
     }
 
-    public void activateUsernameValidator(Object object) throws ValidationException{
-            activateValidator(usernameValidator, object);
+    public void activateUsernameValidator(EmployeeCommandInterface usernameAndId) throws ValidationException{
+            activateValidator(employeeCommandValidator, usernameAndId);
     }
 
-    public void activateVacationRequestValidator(VacationQuery vacationQuery) throws ValidationException{
-        activateValidator(vacationRequestValidator, vacationQuery);
+    public void activateVacationRequestValidator(VacationCommand vacationCommand) throws ValidationException{
+        activateValidator(vacationRequestValidator, vacationCommand);
     }
 
     private void activateValidator(Validator validator, Object o) throws  ValidationException{

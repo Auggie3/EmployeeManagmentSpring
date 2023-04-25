@@ -5,7 +5,9 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.text.SimpleDateFormat;
+import java.time.Duration;
 import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Objects;
@@ -50,5 +52,11 @@ public class PastEmployment {
     @Override
     public int hashCode() {
         return Objects.hash(employeeId, companyName, from);
+    }
+
+
+    public float getYearsOfWork(){
+        float years = ChronoUnit.DAYS.between(getFrom(), getTo())/365.0f;
+        return years;
     }
 }

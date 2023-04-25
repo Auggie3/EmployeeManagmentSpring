@@ -1,6 +1,6 @@
 package com.auggie.EmployeeManagement.errorsAndValidation.validators;
 
-import com.auggie.EmployeeManagement.dto.query.VacationQuery;
+import com.auggie.EmployeeManagement.dto.command.VacationCommand;
 import com.auggie.EmployeeManagement.services.VacationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -19,19 +19,16 @@ public class VacationValidator implements Validator {
 
     @Override
     public boolean supports(Class<?> clazz) {
-        return clazz.isAssignableFrom(VacationQuery.class);
+        return clazz.isAssignableFrom(VacationCommand.class);
     }
 
     @Override
     public void validate(Object target, Errors errors) {
-        VacationQuery vacationQuery = (VacationQuery) target;
-        validateDates(vacationQuery.getFrom(),vacationQuery.getTo(), errors, vacationQuery.getEmployeeId());
+        VacationCommand vacationCommand = (VacationCommand) target;
+        validateDates(vacationCommand.getFrom(), vacationCommand.getTo(), errors, vacationCommand.getEmployeeId());
         if(!errors.hasErrors()) validateDaysOff(
-                vacationQuery.getFrom(),
-                vacationQuery.getTo(),
-                vacationQuery.getDaysOff(),
-                errors,
-                vacationQuery.getEmployeeId()
+                vacationCommand,
+                errors
         );
     }
 
@@ -58,39 +55,14 @@ public class VacationValidator implements Validator {
         }
     }
 
-    private void validateDaysOff(LocalDate from,
-                                 LocalDate to,
-                                 float daysOff,
-                                 Errors errors,
-                                 Integer id)
-    {
-        if(vacationService.notEnoughFreeDays(id,daysOff)){
+    private void validateDaysOff(VacationCommand vacationCommand, Errors errors) {
+        if(vacationService.notEnoughFreeDays(vacationCommand)){
             errors.rejectValue(
                     "daysOff",
                     "not-enough-free-days",
                     "Requested more days off than there is available"
             );
         }
-
-        if(to==null){
-            if(daysOff == 0.5 || daysOff == 1) return;
-            errors.rejectValue(
-                    "daysOff",
-                    "daysOff-differ-from-dates",
-                    "'daysOff' should correspond to given dates!"
-            );
-            return;
-        }
-
-        long datesDifference = ChronoUnit.DAYS.between(from,to);
-        if( ( (long)daysOff ) != datesDifference){
-            errors.rejectValue(
-                    "daysOff",
-                    "daysOff-differ-from-dates",
-                    "'daysOff' should correspond to given dates!"
-            );
-        }
-
     }
 
 //---------------------------

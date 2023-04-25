@@ -11,7 +11,7 @@ import java.time.LocalDate;
 
 @Component
 @RequiredArgsConstructor
-public class UsernameValidator implements Validator {
+public class EmployeeCommandValidator implements Validator {
 
     private final EmployeeService employeeService;
 
@@ -35,7 +35,7 @@ public class UsernameValidator implements Validator {
             validateUsernameWithId(username, errors, id);
         }
 
-
+        validateDates(employeeCommand.getStartDate(), employeeCommand.getEndDate(), errors);
 
     }
 

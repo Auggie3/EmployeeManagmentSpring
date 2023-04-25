@@ -52,8 +52,7 @@ public class EmployeeRepositoryTest {
         e.setName("TestName3");
         e.setPosition("TestPosition2");
         e.setStartDate(LocalDate.now());
-        e.setVacationDaysAvailable(22f);
-        e.setVacationDaysPerYear(22f);
+
 
         Role r = new Role();
         r.addEmployee(e);
@@ -91,7 +90,6 @@ public class EmployeeRepositoryTest {
     public void shouldAddNewVacation(){
         Employee e = employeeRepository.findById(1).orElseThrow(EntityNotFoundException::new);
         Vacation v = new Vacation();
-        v.setDaysOff(1f);
         v.setFrom(LocalDate.parse("2000-11-11"));
         v.setTo(LocalDate.parse("2000-12-12"));
         v.setEmployeeId(e.getId());
