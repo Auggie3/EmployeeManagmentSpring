@@ -16,6 +16,7 @@ public class EmployeeDetailsQuery {
     private Integer id;
     private String name;
     private LocalDate startDate;
+    private LocalDate endDate;
     private String position;
     private float vacationDaysPerYear;
     private float vacationDaysAvailable;

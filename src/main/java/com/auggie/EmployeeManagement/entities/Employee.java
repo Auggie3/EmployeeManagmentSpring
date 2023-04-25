@@ -14,6 +14,7 @@ import java.util.*;
 @Table(name = "employee")
 @ToString
 public class Employee {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
@@ -23,16 +24,13 @@ public class Employee {
     @Temporal(TemporalType.DATE)
     private LocalDate startDate;
 
+    @Temporal(TemporalType.DATE)
+    private LocalDate endDate;
+
     private String position;
-
-    private float vacationDaysPerYear = 22f;
-
-    private float vacationDaysAvailable = 22f;
-
 
     @OneToMany(mappedBy = "employeeId", orphanRemoval = true, fetch = FetchType.LAZY, cascade = {CascadeType.ALL})
     private List<Vacation> vacations = new ArrayList<>();
-
 
     @OneToMany(mappedBy = "employeeId", orphanRemoval = true, fetch = FetchType.LAZY, cascade = {CascadeType.ALL})
     private List<PastEmployment> pastEmployments = new ArrayList<>();
@@ -45,11 +43,16 @@ public class Employee {
     )
     private Set<Role> roles = new HashSet<>();
 
-
-
     @Column(unique = true)
     private String username;
     private String password;
+
+// ----OPTIMISTIC LOCKING-----
+//    @Version
+//    private int version;
+
+
+
 
     public void addRole(Role role){
         if(role != null){
@@ -91,15 +94,43 @@ public class Employee {
     //this is done to keep the roles, vacations and past employments when updating employee
     public void copyEmployee(Employee fromEmployee){
         this.setName(fromEmployee.getName());
-        this.setVacationDaysAvailable(fromEmployee.getVacationDaysAvailable());
         this.setPosition(fromEmployee.getPosition());
         this.setStartDate(fromEmployee.getStartDate());
-        this.setVacationDaysPerYear(fromEmployee.getVacationDaysPerYear());
         this.setUsername(fromEmployee.getUsername());
     }
 
     public void changePassword(String password){
         String encryptedPassword = new BCryptPasswordEncoder().encode(password);
         setPassword(encryptedPassword);
+    }
+
+
+    public float getVacationDaysPerYear(){
+        List<PastEmployment> pastEmployments = getPastEmployments();
+
+        float days = 20.0f;
+        float yearsOfWork = 0.0f;
+
+        for(PastEmployment pastEmployment : pastEmployments){
+            yearsOfWork += pastEmployment.getYearsOfWork();
+        }
+
+        int addedDays = (int)yearsOfWork / 5;
+
+        return days + addedDays;
+    }
+
+    public float getVacationDaysAvailable() {
+        List<Vacation> vacations = getVacations();
+        int currentYear = LocalDate.now().getYear();
+
+        float daysOff = 0.0f;
+
+        for(Vacation vacation : vacations){
+            if(vacation.getFrom().getYear() == currentYear)
+                daysOff += vacation.getDaysOff();
+        }
+
+        return getVacationDaysPerYear() - daysOff;
     }
 }

@@ -86,6 +86,7 @@ public class EmployeeController {
     throws ValidationException
     {
         validationActivator.activateUsernameValidator(employeeCreateCommand);
+
         EmployeeQuery employeeQuery = employeeService.createEmployee(employeeCreateCommand);
         return new ResponseEntity<>(employeeQuery, HttpStatus.CREATED);
     }
@@ -154,9 +155,6 @@ public class EmployeeController {
         employeeService.changePassword(changePasswordDTO.getNewPassword(), id);
         return new ResponseEntity<>(HttpStatus.OK);
     }
-
-    @Version
-    private int version;
 
 
 }

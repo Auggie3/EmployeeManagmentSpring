@@ -1,15 +1,14 @@
 package com.auggie.EmployeeManagement.dto.command;
 
+import com.auggie.EmployeeManagement.interfaces.EmployeeCommandInterface;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.PositiveOrZero;
 import lombok.Data;
 
 import java.time.LocalDate;
-import java.util.Date;
 
 @Data
-public class EmployeeUpdateCommand {
+public class EmployeeUpdateCommand implements EmployeeCommandInterface {
     @NotNull
     private Integer id;
     @NotNull
@@ -17,13 +16,9 @@ public class EmployeeUpdateCommand {
     private String name;
 
     private LocalDate startDate;
+    private LocalDate endDate;
     private String position;
 
-    @PositiveOrZero
-    private float vacationDaysPerYear;
-
-    @PositiveOrZero
-    private float vacationDaysAvailable;
 
     @NotNull
     @NotBlank

@@ -22,4 +22,13 @@ public class AuthExceptionHandler extends ResponseEntityExceptionHandler {
 
         return new ResponseEntity<>(response, HttpStatus.UNAUTHORIZED);
     }
+
+    @ExceptionHandler(EmployeeFiredException.class)
+    public ResponseEntity<Object> handleEmployeeFiredException(EmployeeFiredException employeeFiredException){
+        Map<String, Object> response = new HashMap<>();
+        response.put("message", "Employee fired!!!");
+        response.put("code", "employee-fired");
+
+        return new ResponseEntity<>(response, HttpStatus.UNAUTHORIZED);
+    }
 }

@@ -31,6 +31,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -205,4 +206,12 @@ public class EmployeeService {
 
         return new PageImpl<>(employeeQueries, pageable, employeePage.getTotalElements());
     }
+
+    //AUTH
+    public boolean isEmployeeFired(String username){
+        Employee employee = employeeRepository.findByUsername(username);
+        if(employee.getEndDate()!=null && employee.getEndDate().isAfter(LocalDate.now())) return true;
+        return false;
+    }
+
 }

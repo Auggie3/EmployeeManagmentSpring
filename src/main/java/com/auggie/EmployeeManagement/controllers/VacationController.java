@@ -1,11 +1,13 @@
 package com.auggie.EmployeeManagement.controllers;
 
 
+import com.auggie.EmployeeManagement.dto.command.VacationCommand;
 import com.auggie.EmployeeManagement.dto.query.VacationQuery;
 import com.auggie.EmployeeManagement.dto.query.VacationRequestQuery;
 import com.auggie.EmployeeManagement.errorsAndValidation.ValidationActivator;
 import com.auggie.EmployeeManagement.errorsAndValidation.ValidationException;
 import com.auggie.EmployeeManagement.services.VacationService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -28,21 +30,19 @@ public class VacationController {
     //because of the changes made, i can now use @Secured("ROLE_ADMIN) except custom
     //but its ok
     @PostMapping
-    @PreAuthorize(value = "@customAuthComponent.hasPermisionForVacations(authentication,#vacationQuery)")
-    public ResponseEntity<Void> addVacation(@RequestBody VacationQuery vacationQuery) throws ValidationException {
+    @Secured("ROLE_ADMIN")
+    public ResponseEntity<Void> addVacation(@RequestBody @Valid VacationCommand vacationCommand) throws ValidationException {
 
-        validationActivator.activateVacationValidator(vacationQuery);
+        validationActivator.activateVacationValidator(vacationCommand);
 
-        vacationService.addVacation(vacationQuery);
+        vacationService.addVacation(vacationCommand);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    //because of the changes made, i can now use @Secured("ROLE_ADMIN) except custom
-    //but its ok
     @DeleteMapping
-    @PreAuthorize(value = "@customAuthComponent.hasPermisionForVacations(authentication,#vacationQuery)")
-    public ResponseEntity<Void> deleteVacation(@RequestBody VacationQuery vacationQuery){
-        vacationService.deleteVacation(vacationQuery);
+    @Secured("ROLE_ADMIN")
+    public ResponseEntity<Void> deleteVacation(@RequestBody @Valid VacationCommand vacationCommand){
+        vacationService.deleteVacation(vacationCommand);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
@@ -54,29 +54,29 @@ public class VacationController {
     }
 
     @PostMapping("request")
-    public ResponseEntity<Void> requestVacation(@RequestBody VacationQuery vacationQuery) throws ValidationException{
+    public ResponseEntity<Void> requestVacation(@RequestBody @Valid VacationCommand vacationCommand) throws ValidationException{
 
-        validationActivator.activateVacationValidator(vacationQuery);
-        validationActivator.activateVacationRequestValidator(vacationQuery);
+        validationActivator.activateVacationValidator(vacationCommand);
+        validationActivator.activateVacationRequestValidator(vacationCommand);
 
-        vacationService.requestVacation(vacationQuery);
+        vacationService.requestVacation(vacationCommand);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
 
     @PostMapping("request/allowed")
     @Secured("ROLE_ADMIN")
-    public ResponseEntity<Void> allowVacationRequest(@RequestBody VacationQuery vacationQuery){
-        vacationService.allowVacationRequest(vacationQuery);
+    public ResponseEntity<Void> allowVacationRequest(@RequestBody @Valid VacationCommand vacationCommand){
+        vacationService.allowVacationRequest(vacationCommand);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
 
     @DeleteMapping("request/denied")
     @Secured("ROLE_ADMIN")
-    public ResponseEntity<Void> denyVacationRequest(@RequestBody VacationQuery vacationQuery){
+    public ResponseEntity<Void> denyVacationRequest(@RequestBody @Valid VacationCommand vacationCommand){
 
-        vacationService.denyVacationRequest(vacationQuery);
+        vacationService.denyVacationRequest(vacationCommand);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 

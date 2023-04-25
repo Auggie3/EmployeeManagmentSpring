@@ -1,39 +1,41 @@
 package com.auggie.EmployeeManagement.errorsAndValidation.validators;
 
-import com.auggie.EmployeeManagement.dto.command.EmployeeCreateCommand;
-import com.auggie.EmployeeManagement.dto.command.EmployeeUpdateCommand;
+import com.auggie.EmployeeManagement.interfaces.EmployeeCommandInterface;
 import com.auggie.EmployeeManagement.services.EmployeeService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
 
+import java.time.LocalDate;
+
 @Component
 @RequiredArgsConstructor
-public class UsernameValidator implements Validator {
+public class EmployeeCommandValidator implements Validator {
 
     private final EmployeeService employeeService;
 
 
     @Override
     public boolean supports(Class<?> clazz) {
-        return clazz.isAssignableFrom(EmployeeCreateCommand.class) || clazz.isAssignableFrom(EmployeeUpdateCommand.class);
+        return EmployeeCommandInterface.class.isAssignableFrom(clazz);
     }
 
     @Override
     public void validate(Object target, Errors errors) {
 
-        if(target.getClass()==EmployeeCreateCommand.class) {
-            String username = ((EmployeeCreateCommand) target).getUsername();
+        EmployeeCommandInterface employeeCommand = (EmployeeCommandInterface) target;
+        String username = employeeCommand.getUsername();
+
+        if(employeeCommand.getId() == null){
             validateUsername(username, errors);
         }
-
-        if(target.getClass()==EmployeeUpdateCommand.class) {
-            EmployeeUpdateCommand employeeUpdateCommand = ((EmployeeUpdateCommand) target);
-            String username = employeeUpdateCommand.getUsername();
-            Integer id = employeeUpdateCommand.getId();
+        else {
+            Integer id = employeeCommand.getId();
             validateUsernameWithId(username, errors, id);
         }
+
+        validateDates(employeeCommand.getStartDate(), employeeCommand.getEndDate(), errors);
 
     }
 
@@ -50,6 +52,18 @@ public class UsernameValidator implements Validator {
                     "username-exists-already",
                     "Username already exists!!!"
                     );
+        }
+    }
+
+    private void validateDates(LocalDate start, LocalDate end, Errors errors){
+        if(end != null){
+            if(end.isBefore(start)){
+                errors.rejectValue(
+                        "endDate",
+                        "end-date-before-start-date",
+                        "Employee end date cant be before start date"
+                );
+            }
         }
     }
 }

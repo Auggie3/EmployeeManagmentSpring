@@ -1,13 +1,13 @@
 package com.auggie.EmployeeManagement.services;
 
 import com.auggie.EmployeeManagement.configurations.CacheHelper;
+import com.auggie.EmployeeManagement.dto.command.VacationCommand;
 import com.auggie.EmployeeManagement.dto.query.VacationQuery;
 import com.auggie.EmployeeManagement.dto.query.VacationRequestQuery;
 import com.auggie.EmployeeManagement.entities.Employee;
 import com.auggie.EmployeeManagement.entities.Vacation;
 import com.auggie.EmployeeManagement.entities.VacationRequest;
 import com.auggie.EmployeeManagement.entities.composite_primary_keys.VacationCompositeKey;
-import com.auggie.EmployeeManagement.mappers.EmployeeMapper;
 import com.auggie.EmployeeManagement.mappers.VacationMapper;
 import com.auggie.EmployeeManagement.repositories.EmployeeRepository;
 import com.auggie.EmployeeManagement.repositories.VacationRequestRepository;
@@ -15,8 +15,6 @@ import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Caching;
-import org.springframework.security.core.context.SecurityContext;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -35,16 +33,12 @@ public class VacationService {
     @Caching(
             evict = {
                     @CacheEvict(value = "employees", key = "'all-employees-details'"),
-                    @CacheEvict(value = "employee-details", key = "#vacationQuery.getEmployeeId()")
+                    @CacheEvict(value = "employee-details", key = "#vacationCommand.getEmployeeId()")
             }
     )
-    public void addVacation(VacationQuery vacationQuery) {
-        Vacation vacation = vacationMapper.toVacation(vacationQuery);
+    public void addVacation(VacationCommand vacationCommand) {
+        Vacation vacation = vacationMapper.toVacationFromCommand(vacationCommand);
         Employee employee = employeeRepository.getReferenceById(vacation.getEmployeeId());
-
-        float daysAvailable = employee.getVacationDaysAvailable();
-        daysAvailable-=vacation.getDaysOff();
-        employee.setVacationDaysAvailable(daysAvailable);
 
         employee.addVacation(vacation);
         employeeRepository.save(employee);
@@ -54,17 +48,13 @@ public class VacationService {
     @Caching(
             evict = {
                     @CacheEvict(value = "employees", key = "'all-employees-details'"),
-                    @CacheEvict(value = "employee-details", key = "#vacationQuery.getEmployeeId()")
+                    @CacheEvict(value = "employee-details", key = "#vacationCommand.getEmployeeId()")
             }
     )
-    public void deleteVacation(VacationQuery vacationQuery) {
-        Vacation vacation = vacationMapper.toVacation(vacationQuery);
+    public void deleteVacation(VacationCommand vacationCommand) {
+        Vacation vacation = vacationMapper.toVacationFromCommand(vacationCommand);
         Employee employee = employeeRepository.getReferenceById(vacation.getEmployeeId());
 
-
-        float daysAvailable = employee.getVacationDaysAvailable();
-        daysAvailable+=vacation.getDaysOff();
-        employee.setVacationDaysAvailable(daysAvailable);
 
         employee.deleteVacation(vacation);
         employeeRepository.save(employee);
@@ -72,8 +62,8 @@ public class VacationService {
 
     }
 
-    public void requestVacation(VacationQuery vacationQuery) {
-        VacationRequest vacationRequest = vacationMapper.toVacationRequest(vacationQuery);
+    public void requestVacation(VacationCommand vacationCommand) {
+        VacationRequest vacationRequest = vacationMapper.toVacationRequestFromCommand(vacationCommand);
         vacationRequestRepository.save(vacationRequest);
     }
 
@@ -90,28 +80,28 @@ public class VacationService {
                 .toList();
     }
 
-    public void allowVacationRequest(VacationQuery vacationQuery) {
+    public void allowVacationRequest(VacationCommand vacationCommand) {
         VacationCompositeKey vacationCompositeKey = new VacationCompositeKey();
-        vacationCompositeKey.setEmployeeId(vacationQuery.getEmployeeId());
-        vacationCompositeKey.setFrom(vacationQuery.getFrom());
+        vacationCompositeKey.setEmployeeId(vacationCommand.getEmployeeId());
+        vacationCompositeKey.setFrom(vacationCommand.getFrom());
         VacationRequest vacationRequest = vacationRequestRepository.findById(vacationCompositeKey)
                 .orElseThrow(EntityNotFoundException::new);
 
         //TODO: maybe i dont need this because i already have vacationQuery but just for safety...
-        VacationQuery allowedVacationQuery = vacationMapper.toVacationQueryFromRequest(vacationRequest);
+        VacationCommand allowedVacation = vacationMapper.toVacationCommandFromRequest(vacationRequest);
 
         //CACHE: TODO: u should separate vacation and vacation request services into 2 classes
         cacheHelper.evictAllEntriesFromCache();
 
-        addVacation(allowedVacationQuery);
+        addVacation(allowedVacation);
 
         vacationRequestRepository.delete(vacationRequest);
     }
 
-    public void denyVacationRequest(VacationQuery vacationQuery) {
+    public void denyVacationRequest(VacationCommand vacationCommand) {
         VacationCompositeKey vacationCompositeKey = new VacationCompositeKey();
-        vacationCompositeKey.setEmployeeId(vacationQuery.getEmployeeId());
-        vacationCompositeKey.setFrom(vacationQuery.getFrom());
+        vacationCompositeKey.setEmployeeId(vacationCommand.getEmployeeId());
+        vacationCompositeKey.setFrom(vacationCommand.getFrom());
 
         VacationRequest vacationRequest = vacationRequestRepository.getReferenceById(vacationCompositeKey);
 
@@ -123,6 +113,7 @@ public class VacationService {
         Employee employee = employeeRepository.getReferenceById(id);
         List<Vacation> vacations = employee.getVacations();
         for(Vacation vacation : vacations){
+            if(from.isEqual(vacation.getFrom())) return true;
             if(dateIsBetween(from, vacation.getFrom(), vacation.getTo())) return true;
             if(dateIsBetween(to, vacation.getFrom(), vacation.getTo())) return true;
             if(dateIsBetween(vacation.getFrom(),from,to)) return true;
@@ -137,8 +128,12 @@ public class VacationService {
         return false;
     }
 
-    public boolean notEnoughFreeDays(Integer id, float daysOff) {
-        Employee employee = employeeRepository.getReferenceById(id);
+    public boolean notEnoughFreeDays(VacationCommand vacationCommand) {
+        Employee employee = employeeRepository.getReferenceById(vacationCommand.getEmployeeId());
+        Vacation vacation = vacationMapper.toVacationFromCommand(vacationCommand);
+
+        float daysOff = vacation.getDaysOff();
+
         if(daysOff > employee.getVacationDaysAvailable()) return true;
         return false;
     }

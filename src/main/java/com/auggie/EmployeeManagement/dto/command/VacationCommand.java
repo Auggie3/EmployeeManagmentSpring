@@ -1,5 +1,6 @@
-package com.auggie.EmployeeManagement.dto.query;
+package com.auggie.EmployeeManagement.dto.command;
 
+import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -7,10 +8,11 @@ import java.time.LocalDate;
 
 @Data
 @NoArgsConstructor
-public class VacationRequestQuery {
+public class VacationCommand {
+    @NotNull
     private Integer employeeId;
-    private String employeeName;
+    @NotNull
     private LocalDate from;
+    @NotNull
     private LocalDate to;
-    private float daysOff;
 }

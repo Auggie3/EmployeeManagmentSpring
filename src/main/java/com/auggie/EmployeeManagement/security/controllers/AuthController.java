@@ -1,8 +1,10 @@
 package com.auggie.EmployeeManagement.security.controllers;
 
+import com.auggie.EmployeeManagement.security.EmployeeFiredException;
 import com.auggie.EmployeeManagement.security.dto.LoginDTO;
 import com.auggie.EmployeeManagement.security.jwt.JwtTokenDTO;
 import com.auggie.EmployeeManagement.security.jwt.JwtTokenProvider;
+import com.auggie.EmployeeManagement.services.EmployeeService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.http.HttpStatus;
@@ -24,10 +26,13 @@ public class AuthController {
 
     private final AuthenticationManager authenticationManager;
     private final JwtTokenProvider tokenProvider;
+    private final EmployeeService employeeService;
 
 
     @PostMapping("login")
-    public ResponseEntity<JwtTokenDTO> login(@RequestBody LoginDTO loginDTO) throws BadCredentialsException {
+    public ResponseEntity<JwtTokenDTO> login(@RequestBody LoginDTO loginDTO)
+            throws BadCredentialsException, EmployeeFiredException
+    {
 
         try{
             Authentication authentication = new UsernamePasswordAuthenticationToken(
@@ -35,11 +40,18 @@ public class AuthController {
                     loginDTO.getPassword()
             );
             Authentication auth = authenticationManager.authenticate(authentication);
+
+            if(employeeService.isEmployeeFired(loginDTO.getUsername()))
+                throw new EmployeeFiredException();
+
             JwtTokenDTO jwtTokenDTO = tokenProvider.generateToken(auth, loginDTO.isRememberMe());
             return new ResponseEntity<>(jwtTokenDTO, HttpStatus.CREATED);
         }
         catch (BadCredentialsException badCredentialsException){
             throw badCredentialsException;
+        }
+        catch (EmployeeFiredException employeeFiredException){
+            throw employeeFiredException;
         }
         catch (Exception e){
             log.error("Login error. Message: {}", e.getMessage());

@@ -22,13 +22,4 @@ public class CustomAuthComponent {
         return false;
     }
 
-
-    public boolean hasPermisionForVacations(Authentication authentication, VacationQuery vacationQuery){
-
-        if(authentication.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_ADMIN")))
-            return true;
-
-        return false;
-    }
-
 }

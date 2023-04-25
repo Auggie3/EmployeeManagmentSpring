@@ -1,6 +1,7 @@
 package com.auggie.EmployeeManagement.mappers;
 
 
+import com.auggie.EmployeeManagement.dto.command.VacationCommand;
 import com.auggie.EmployeeManagement.dto.query.VacationQuery;
 import com.auggie.EmployeeManagement.dto.query.VacationRequestQuery;
 import com.auggie.EmployeeManagement.entities.Vacation;
@@ -14,12 +15,13 @@ import org.mapstruct.ReportingPolicy;
         unmappedSourcePolicy = ReportingPolicy.IGNORE
 )
 public interface VacationMapper {
-    Vacation toVacation(VacationQuery vacationQuery);
     VacationQuery toVacationQuery(Vacation vacation);
 
-    VacationRequest toVacationRequest(VacationQuery vacationQuery);
-    VacationQuery toVacationQueryFromRequest(VacationRequest vacationRequest);
+    VacationCommand toVacationCommandFromRequest(VacationRequest vacationRequest);
 
     VacationRequestQuery toVacationRequestQuery(VacationRequest vacationRequest);
 
+    Vacation toVacationFromCommand(VacationCommand vacationCommand);
+
+    VacationRequest toVacationRequestFromCommand(VacationCommand vacationCommand);
 }
